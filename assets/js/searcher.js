@@ -1,6 +1,6 @@
+const URL1 = "https://raw.githubusercontent.com/Bootcamp-Espol/Datos/main/products.json";
+const URL2 = "https://raw.githubusercontent.com/Bootcamp-Espol/Datos/main/products.xml";
 let  loadProducts = ()=>{
-    let URL1="https://raw.githubusercontent.com/Bootcamp-Espol/FSD02/main/S03D03/clase/recursos/products.json";
-    let URL2="https://raw.githubusercontent.com/Bootcamp-Espol/FSD02/main/S03D03/clase/recursos/products.xml";
     loadProOne(URL1);
     loadProTwo(URL2);
 }
@@ -85,4 +85,64 @@ function loadProTwo(URL){
       });
      // products.innerHTML =  list_products;
 }
+
+function filterByProduct(text_product){
+  let list_products="";
+  let list_products2="";
+    let products = document.getElementById("list-products");
+    fetch( URL1 )
+      .then(response => response.json() ) /* Convierte el response a JSON */
+      .then(result => {   
+        /* Callback por éxito: Procese el result */        
+      //  console.log( result );
+      let productos_filter= result.filter(producto=> (text_product.toLowerCase()==producto.name.toLowerCase() || text_product.toLowerCase()==producto.type.toLowerCase()));
+      for(let producto  of  productos_filter){
+          list_products+=formattedProducts(producto.name, producto.price, producto.src, producto.type);
+      }
+        products.innerHTML= list_products;
+      })
+      .catch(error => {        
+        /* Callback por fallo: Procese el error */ 
+        console.log( error );
+
+      });
+      fetch( URL2 )
+      .then(response => response.text()  ) /* Convierte el response a JSON */
+      .then(result => {   
+        let xml = (new DOMParser()).parseFromString(result, 'application/xml');
+        let arrayProducts = xml.getElementsByTagName("product") ;
+        //let result_filter = arrayProducts.filter(product => (product.getElementsByTagName("name")[0].innerHTML==text_product || product.getElementsByTagName("name")[0].innerHTML==text_product));
+        if(arrayProducts.length>0){
+          for(let i=0;i<arrayProducts.length;i++){
+            if(arrayProducts[i].getElementsByTagName("name")[0].innerHTML.toLowerCase()==text_product.toLowerCase() ||arrayProducts[i].getElementsByTagName("type")[0].innerHTML.toLowerCase()==text_product.toLowerCase() ){
+            let name = arrayProducts[i].getElementsByTagName("name")[0].innerHTML;
+            let price =  arrayProducts[i].getElementsByTagName("price")[0].innerHTML;
+            let img =  arrayProducts[i].getElementsByTagName("src")[0].innerHTML;
+            let type =  arrayProducts[i].getElementsByTagName("type")[0].innerHTML;
+            list_products2+=formattedProducts(name, price, img, type);
+            }
+          }
+        }
+       // console.log("aqiooo "+ result_filter);
+        products.innerHTML+= list_products2;
+      })
+      .catch(error => {        
+        /* Callback por fallo: Procese el error */   
+
+        console.log( error );
+
+      });
+}
 loadProducts();
+
+let btn_filter = document.getElementById("filter");
+
+btn_filter.addEventListener('click', (event) => {
+  var box_product= document.getElementById("text").value;
+  if(box_product==""||box_product==undefined){
+    loadProducts();
+  }else{
+    filterByProduct(box_product);
+  }
+
+});
