@@ -95,7 +95,7 @@ function filterByProduct(text_product){
       .then(result => {   
         /* Callback por éxito: Procese el result */        
       //  console.log( result );
-      let productos_filter= result.filter(producto=> (text_product.toLowerCase()==producto.name.toLowerCase() || text_product.toLowerCase()==producto.type.toLowerCase()));
+      let productos_filter= result.filter(producto=> (text_product.toLowerCase()==producto.name.toLowerCase() || text_product.toLowerCase()==producto.type.toLowerCase() || producto.type.toLowerCase().includes(text_product.toLowerCase()) || producto.name.toLowerCase().includes(text_product.toLowerCase())));
       for(let producto  of  productos_filter){
           list_products+=formattedProducts(producto.name, producto.price, producto.src, producto.type);
       }
@@ -114,7 +114,7 @@ function filterByProduct(text_product){
         //let result_filter = arrayProducts.filter(product => (product.getElementsByTagName("name")[0].innerHTML==text_product || product.getElementsByTagName("name")[0].innerHTML==text_product));
         if(arrayProducts.length>0){
           for(let i=0;i<arrayProducts.length;i++){
-            if(arrayProducts[i].getElementsByTagName("name")[0].innerHTML.toLowerCase()==text_product.toLowerCase() ||arrayProducts[i].getElementsByTagName("type")[0].innerHTML.toLowerCase()==text_product.toLowerCase() ){
+            if(arrayProducts[i].getElementsByTagName("name")[0].innerHTML.toLowerCase()==text_product.toLowerCase() ||arrayProducts[i].getElementsByTagName("type")[0].innerHTML.toLowerCase()==text_product.toLowerCase() || arrayProducts[i].getElementsByTagName("name")[0].innerHTML.toLowerCase().includes(text_product.toLowerCase()) || arrayProducts[i].getElementsByTagName("type")[0].innerHTML.toLowerCase().includes(text_product.toLowerCase())){
             let name = arrayProducts[i].getElementsByTagName("name")[0].innerHTML;
             let price =  arrayProducts[i].getElementsByTagName("price")[0].innerHTML;
             let img =  arrayProducts[i].getElementsByTagName("src")[0].innerHTML;
